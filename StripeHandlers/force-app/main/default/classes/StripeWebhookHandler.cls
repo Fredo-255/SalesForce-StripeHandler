@@ -1,3 +1,9 @@
+/**
+ * @description       : 
+ * @author            : VISEO / FFI
+ * @last modified on  : 08-18-2022
+ * @last modified by  : VISEO / FFI
+**/
 @RestResource(urlMapping='/Stripe/Webhook/Processor/*')
 global with sharing class StripeWebhookHandler
 {
@@ -5,7 +11,7 @@ global with sharing class StripeWebhookHandler
     global static void processWebhook(){
         RestRequest req = RestContext.request;
         RestResponse resp = RestContext.response;
-        String WebhookKey = 'whsec_3Du8aeUWFW5fC0g1iS24S6x0h0ryVLHc';
+        String WebhookKey = 'whsec_7TpBSYGYkxowhN5iV2sCDZy8QaJe8kGw';
         Boolean check = SignatureCheck(req, resp, WebhookKey);
         if (check == true){
             Blob jsonBlob = req.requestBody;
@@ -29,7 +35,7 @@ global with sharing class StripeWebhookHandler
                 sigMap.put(kv.split('=')[0],kv.split('=')[1]);
             }
             
-            String signature_payload = sigMap.get('t')+'.'+jsonString;
+            String signature_payload = sigMap.get('t')+'.'+jsonString;#Dreamhouse
             Blob input = Blob.valueOf(signature_payload);
             
             Blob 

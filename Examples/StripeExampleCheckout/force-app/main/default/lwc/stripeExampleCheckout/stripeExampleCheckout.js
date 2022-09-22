@@ -2,12 +2,16 @@ import { LightningElement } from 'lwc';
 import makeGetCallout from '@salesforce/apex/StripeAPIHandler.makeGetCallout';
 
 export default class StripeExampleCheckout extends LightningElement {
-    customerEmail = 'exampleCustomer@example.com';
+    customerEmail = 'frederic.finet@viseo.com';
     amount = 76800.00;
-    paymentMethodOne='card';
-    paymentMethodTwo='klarna';
+    cardPaymentMethod='card';
+    transferPaymentMethod='customer_balance';
+    fundingType='bank_transfer';
+    type='eu_bank_transfer';
+    country='FR';
+
     customerID = '';
-    currency = 'usd';
+    currency = 'eur';
 
     async getCheckoutLink(){
         //Get Customer
@@ -30,6 +34,8 @@ export default class StripeExampleCheckout extends LightningElement {
             var createcustomer = JSON.parse(pcreatecustomer);
             customerID = createcustomer.id
         }
+        
+        console.log('CustomerId : ' + customerID);
 
         //Create link
         var urlencoded = new URLSearchParams();
@@ -44,8 +50,11 @@ export default class StripeExampleCheckout extends LightningElement {
         urlencoded.append("line_items[0][price_data][unit_amount_decimal]", this.amount);
         urlencoded.append("line_items[0][quantity]", "1");
         urlencoded.append("mode", "payment");
-        urlencoded.append("payment_method_types[0]", this.paymentMethodOne);
-        urlencoded.append("payment_method_types[1]", this.paymentMethodTwo);
+        urlencoded.append("payment_method_types[0]", this.cardPaymentMethod);
+        urlencoded.append("payment_method_types[1]", this.transferPaymentMethod);
+        urlencoded.append("payment_method_options[customer_balance][funding_type]", this.fundingType);
+        urlencoded.append("payment_method_options[customer_balance][bank_transfer][type]", this.type);
+        urlencoded.append("payment_method_options[customer_balance][bank_transfer][eu_bank_transfer][country]", this.country);
         var method = 'POST';
         var url = 'https://api.stripe.com/v1/checkout/sessions'
         let pcheckout = await makeGetCallout({urlencoded:urlencoded.toString(),url:url, method:method});
